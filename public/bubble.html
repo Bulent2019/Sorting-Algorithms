@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js">
+    </script>
+    <link rel="stylesheet" href="./style.css"/>
+    <link rel="shortcut icon" href="#" />
+</head>
+
+<body>
+    <a class="navi" href="bubble.html"><button>Bubble Sort</button></a>
+    <a class="navi" href="quick.html"><button>Quick Sort</button></a>
+
+    <h1>Bubble Sort</h1>
+    <br />
+    <label for="arrayLength" style="font-size: 20px;">Put in the array length</label>
+    <br />
+    <input autofocus autocomplete="off" type="text" 
+           id="arrayLength" name="number" value="" style="font-size: 20px;" />
+    <br />
+    <button id="startRandom" onclick="randomArray();" 
+            style="margin-left: 60px; margin-top: 5px; margin-right: 20px;">Start</button>
+    <button onclick="window.location.reload(true)">Reset</button>
+    <br />
+    <h2>My Array:</h2>
+    <div id="number" style="font-size: 26px; margin-left: 10%; background-color: antiquewhite;">
+    </div>
+    <button id="showGraph" onclick="showGraph()"
+    style="margin-left: 60px; margin-top: 5px; margin-right: 20px;"> Show Graph</button>
+    <br />
+    <div id="sortedOutput" hidden>
+        <!-- <button id="sortAgain" type="button"  onclick="startTimer(); bubbleSort()">Sort Again
+                </button> -->
+        <h3>Sorted Array:</h3>
+        <div id="output" style="font-size: 26px; margin-left: 10%;"></div>
+    </div>
+
+    <br />
+    <br />
+    <button id="sortingButton" type="button"  onclick="startTimer(); bubbleSort()">Start Sorting
+            </button>
+    <br />
+
+    <div id="timer" style="font-size: 26px; margin-left: 35%; width:1200px">
+        <div id="msec">0.000 msec</div>
+    </div>
+
+    <br />
+
+    <div id="chartBox">
+        <canvas id="myGraph" style="width: 100%; max-width: 1200px;"></canvas>
+    </div>
+
+    <br />
+    <br />
+
+    <footer style="text-align: center;">
+        <p>&copy B&uuml;lent Arslan, 10/2022</p>
+    </footer>
+
+    <script type="text/javascript">
+        let startTime, endTime;
+
+        // enter key in input field
+        document.getElementById("arrayLength").onkeyup = function(e) {
+            if (e.keyCode == 13) {
+                randomArray();
+            }
+        }
+
+        document.getElementById("number").innerHTML = localStorage.getItem("myArray");
+
+ 
+        function startTimer() {
+            console.log("Timer starts");
+
+            startTime = new Date();
+        }
+        
+        function stopTimer() {
+            endTime = new Date();
+
+            let timeDiff = endTime - startTime; //in ms
+            timeDiff /= 1000;
+            
+            document.getElementById("msec").innerHTML = timeDiff + " msec";
+
+            console.log("Timer Ends");
+        }
+        //  ------- Chart  ----------------------------
+        function getGraph(x, y) {
+            document.getElementById("sortingButton").style.display = "block";
+
+            let myChart = new Chart("myGraph", {
+                type: "bar",
+                data: {
+                    labels: x,
+                    datasets: [{
+                        barPercentage: 0.5,
+                        backgroundColor: `rgb(0,0,0)`,
+                        data: y,
+                    }]
+                },
+                options: {
+                    animations: {
+                        tension: {
+                            duration: 1000,
+                            easing: 'linear',
+                            from: 1,
+                            to: 0,
+                            loop: true
+                        }
+                    },
+                    events: ['click'],
+                    responsive: false,
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: "Bubble Sort in Action"
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        x: [{}]
+                    }
+                }
+            });
+        }
+
+        //  ------- Random Array  ----------------------------
+        function randomArray() {
+            let x = [];
+            let y = [];            
+
+            let arrayLength = document.getElementById("arrayLength").value;
+            let randomNumber = Array.from({
+                length: arrayLength
+            }, () => Math.floor(Math.random() * 99) + 1);
+
+            localStorage.setItem("myArray", JSON.stringify(randomNumber));
+
+
+            document.getElementById("number").innerHTML = randomNumber;
+
+            for (let i = 0; i < randomNumber.length; i++) {
+                x.push(i + 1);
+                y.push(randomNumber[i]);
+            }
+            getGraph(x, y);
+        }
+
+        //  ------- Sorting Algorithm ----------------------------
+        function bubbleSort() {
+            document.getElementById("sortedOutput").style.display = "block";
+
+            let getArray = localStorage.getItem("myArray");
+            let startArray = JSON.parse(getArray);
+            
+            let arrayLength = startArray.length;
+            let k = parseInt(arrayLength);
+            let m = [];
+            for (let n = 0; n < k; n++) {
+                m.push(n);
+            }
+
+            copyArr = localStorage.getItem("myArray");
+
+            let backArray = JSON.parse(copyArr);
+
+            for (let i = 0; i < backArray.length - 1; i++) {
+                let swapCheck = false;
+                for (let j = 0; j < backArray.length - i - 1; j++) {
+                    let a = backArray[j];
+                    let b = backArray[j + 1];
+                    if (a > b) {
+                        let temp = backArray[j];
+                        backArray[j] = backArray[j + 1];
+                        backArray[j + 1] = temp;
+                        swapCheck = true;
+                    }
+                }
+                if (!swapCheck) {
+                    break;
+                }
+            }
+            document.getElementById("output").innerHTML = backArray;
+
+            localStorage.setItem("sortedArray", JSON.stringify(backArray));
+            let getSorted = localStorage.getItem("sortedArray");
+            y = JSON.parse(getSorted);
+
+            getGraph(m, y);
+            console.log("Sorting is done");
+            
+            stopTimer();
+        }
+
+        function showGraph() {
+            let x = [];
+            let y = [];
+            let localArray = localStorage.getItem("myArray");
+            let useArray = JSON.parse(localArray);
+            let len = useArray.length;
+
+            for (let i = 0; i < len; i++) {
+                x.push(i + 1);
+                y.push(useArray[i]);
+            }
+            getGraph(x, y);
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "module_2",
+  "version": "1.0.0",
+  "porxy": "http://192.168.0.249:3232",
+  "description": "This is the data selfie app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm index.js"
+  },
+  "keywords": [
+    "example",
+    "data"
+  ],
+  "author": "Me",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "jquery": "^3.6.1",
+    "nedb": "^1.8.0"
+  }
+}
