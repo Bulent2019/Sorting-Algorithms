@@ -29,7 +29,7 @@
             <br />
         <button id="sortingButton" 
                 type="button" 
-                onclick="startTimer(); quickSort()"
+                onclick="startTimer(); startSorting()"
                 style="align-content:center;">Start Sorting</button>
         
         <div id="timer" style="font-size: 26px; margin-left: 35%; width:1200px">
@@ -75,8 +75,6 @@
         }
 
         function getGraph(x, y) {
-            document.getElementById("sortingButton").style.display = "block";
-
             let myChart = new Chart("myGraph", {
                 type: "bar",
                 data: {
@@ -132,59 +130,68 @@
             getGraph(x, y);
         }
        
-        function quickSort() {
+        function startSorting() {
             let localArray = localStorage.getItem("myArray");
-            let useArray = JSON.parse(localArray);
-            let len = useArray.length;
+            let arr = JSON.parse(localArray);
+            let len = arr.length;
+            let low = 0;
+            let high = len - 1;
+            let x = [];
+            let y = [];
 
-            document.getElementById("output").innerHTML = copyArr;
-            getGraph(x, copyArr);
-        }
+            let sortedArray = quickSort(arr, low, high);
 
-        const swap = (arr, left, right) => {
-            const temp = arr[left]
-            arr[left] = arr[right]
-            arr[right] = temp;
-        }
-
-        const partitionLow = (arr, low, high) => {
-            //Pick the first element as pivot
-            let pivot = arr[low];
-            let i = low;
-            
-            //Partition the array into two parts using the pivot
-            for(let j = low; j <= high; j++){
-                if(arr[j] <= pivot){ 
-                swap(arr, i, j);
-                i++;
-                }
-            }
-            
-            swap(arr, i - 1, low);
-            
-            //Return the pivot index
-            return i - 1;
-        }
-
-        const quicksort = (arr, low, high) => {
-            // base condition
-            if (low >= high) {
-            return;
+            for (let i = 0; i < len; i++) {
+                x.push(i + 1);
+                y.push(sortedArray[i]);
             }
 
-            // rearrange the elements across pivot
-            const pivot = partitionLow(arr, low, high);
-
-            // recur on sub-array containing elements less than pivot
-            quicksort(arr, low, pivot - 1);
-
-            // recur on sub-array containing elements more than pivot
-            quicksort(arr, pivot + 1, high);
-            
+            document.getElementById("output").innerHTML = arr;
+            getGraph(x, y); 
             console.log("Sorting is done");
+
             stopTimer();
         }
 
+        function swap(arr, left, right){
+            var temp = arr[left];
+            arr[left] = arr[right];
+            arr[right] = temp;
+        }
+
+        function partition(arr, left, right) {
+            let pivot   = arr[Math.floor((right + left) / 2)], //middle element
+                i       = left, //left pointer
+                j       = right; //right pointer
+            while (i <= j) {
+                while (arr[i] < pivot) {
+                    i++;
+                }
+                while (arr[j] > pivot) {
+                    j--;
+                }
+                if (i <= j) {
+                    swap(arr, i, j); //swap two elements
+                    i++;
+                    j--;
+                }
+            }
+            return i;
+        }
+
+        function quickSort(arr, left, right) {
+            let index;
+            if (arr.length > 1) {
+                index = partition(arr, left, right); //index returned from partition
+                if (left < index - 1) { //more elements on the left side of the pivot
+                    quickSort(arr, left, index - 1);
+                }
+                if (index < right) { //more elements on the right side of the pivot
+                    quickSort(arr, index, right);
+                }
+            }
+            return arr;
+        }
     </script>
 
     </body>
