@@ -5,11 +5,21 @@
 //start -> in folder module_2 -> node index.js
 
 const express = require('express'); // able to use express
-const app = express();
+const { isEmptyObject } = require('jquery');
+
+const sockedIO = require('socket.io');
+const http = require('http');
+const port = process.env.PORT||3000;
 
 const Datastore = require('nedb');
 
-app.listen(3000, () => console.log('Listening Port: 3000'));
+let app = express();
+let server = http.createServer(app);
+let io = sockedIO(server);
+
+server.listen(port, () => console.log("Listening on Port: " + port));
+
+// app.listen(3000, () => console.log('Listening Port: 3000'));
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
