@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js">
+    </script>
+    <link rel="stylesheet" href="./style.css"/>
+    <link rel="shortcut icon" href="#" />
+</head>
+
+<body>
+    <a class="navi" href="bubble.html"><button>Bubble Sort</button></a>
+    <a class="navi" href="quick.html"><button>Quick Sort</button></a>
+    <a class="navi" href="sorting.html"><button>Sorting</button></a>
+    <a class="navi" href="insertion.html"><button>Insertion Sorting</button></a>
+    <a class="navi" href="testBubble.html"><button>Second Bubble</button></a>
+    <a class="navi" href="testQuick.html"><button>Second Quick</button></a>
+    <a class="navi" href="testHeap.html"><button>Second Merge</button></a>
+
+    <h1>TEST Merge</h1>
+    <br />
+    <label for="arrayLength" style="font-size: 20px;">Put in the array length</label>
+    <br />
+    <input autofocus autocomplete="off" type="text" 
+           id="arrayLength" name="number" value="" style="font-size: 20px;" />
+    <br />
+    <button id="startRandom" onclick="randomArray();" 
+            style="margin-left: 60px; margin-top: 5px; margin-right: 20px;">Start</button>
+    <button onclick="window.location.reload(true)">Reset</button>
+    <br />
+    <h2>My Array:</h2>
+    <div id="number" style="font-size: 26px; margin-left: 10%; background-color: antiquewhite;">
+    </div>
+    <br />
+    <div id="sortedOutput" hidden>
+        <h3>Sorted Array:</h3>
+        <div id="output" style="font-size: 26px; margin-left: 10%;"></div>
+    </div>
+
+    <br />
+    <br />
+    <button id="sortingButton" type="button"  onclick="startTimer(); startSorting()">Start Sorting
+            </button>
+    <br />
+
+    <div id="timer" style="font-size: 26px; margin-left: 35%; width:1200px">
+        <div id="msec">0.000 msec</div>
+    </div>
+
+    <br />
+    <br />
+
+    <footer style="text-align: center;">
+        <p>&copy B&uuml;lent Arslan, 10/2022</p>
+    </footer>
+
+    <script type="text/javascript">
+        let startTime, endTime;
+
+        // enter key in input field
+        document.getElementById("arrayLength").onkeyup = function(e) {
+            if (e.keyCode == 13) {
+                randomArray();
+            }
+        }
+
+        document.getElementById("number").innerHTML = localStorage.getItem("myArray");
+ 
+        function startTimer() {
+            console.log("Timer starts");
+
+            startTime = new Date();
+        }
+        
+        function stopTimer() {
+            endTime = new Date();
+
+            let timeDiff = endTime - startTime; //in ms
+            timeDiff /= 1000;
+            
+            document.getElementById("msec").innerHTML = timeDiff + " msec";
+
+            console.log("Timer Ends");
+        }
+        
+        //  ------- Random Array  ----------------------------
+        function randomArray() {   
+            let arrayLength = document.getElementById("arrayLength").value;
+            let randomNumber = Array.from({
+                length: arrayLength
+            }, () => Math.floor(Math.random() * 99) + 1);
+
+            localStorage.setItem("myArray", JSON.stringify(randomNumber));
+
+            document.getElementById("number").innerHTML = randomNumber;
+        }
+
+        //  ------- Sorting Algorithm ----------------------------
+
+        function startSorting() {
+            let localArray = localStorage.getItem("myArray");
+            let arr = JSON.parse(localArray);
+          
+            let sortedArray = mergeSort(arr);
+
+            document.getElementById("output").innerHTML = arr;
+            console.log("Sorting is done");
+
+            stopTimer();
+        }
+
+
+         const mergeSort = (arr) => {
+            if (arr.length <= 1) {
+                return arr;
+            }
+
+            let midIdx = Math.floor(arr.length / 2);
+            let left = arr.slice(0, midIdx);
+            let right = arr.slice(midIdx);
+
+            let leftSorted = mergeSort(left);
+            let rightSorted = mergeSort(right);
+
+            return merge(leftSorted, rightSorted);
+
+        };
+
+        const merge = (arr1, arr2) => {
+            let merged = [];
+
+            while (arr1.length && arr2.length) {
+                if (arr1[0] < arr2[0]) {
+                    merged.push(arr1.shift());
+                } else {
+                    merged.push(arr2.shift());
+                }
+            }
+
+            return [...merged, ...arr1, ...arr2];
+        };
+    </script>
+
+</body>
+
+</html>

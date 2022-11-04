@@ -19,7 +19,7 @@
         <a class="navi" href="test.html"><button>Test</button></a>
 
 
-        <h1>Quick Sort</h1>
+        <h1>Sorting</h1>
         <h2>My Array:</h2>
         <div id="number" style="font-size: 26px; margin-left: 10%; background-color: antiquewhite;">
         </div>
@@ -143,7 +143,7 @@
             let x = [];
             let y = [];
 
-            let sortedArray = quickSort(arr, low, high);
+            let sortedArray = mergeSort(arr);
 
             for (let i = 0; i < len; i++) {
                 x.push(i + 1);
@@ -157,45 +157,50 @@
             stopTimer();
         }
 
-        function swap(arr, left, right){
-            var temp = arr[left];
-            arr[left] = arr[right];
-            arr[right] = temp;
+
+        function quickSort(arr) {
+            if (arr.length === 0)
+                return [];
+            let left = [], right =[], pivot = arr[0];
+            for (let i=1; i< arr.length; i++) {
+                if(arr[i] < pivot)
+                    left.push(arr[i]);
+                else
+                    right.push(arr[i]);
+            };
+
+            return [...quickSort(left), pivot, ...quickSort(right)];
         }
 
-        function partition(arr, left, right) {
-            let pivot   = arr[Math.floor((right + left) / 2)], //middle element
-                i       = left, //left pointer
-                j       = right; //right pointer
-            while (i <= j) {
-                while (arr[i] < pivot) {
-                    i++;
-                }
-                while (arr[j] > pivot) {
-                    j--;
-                }
-                if (i <= j) {
-                    swap(arr, i, j); //swap two elements
-                    i++;
-                    j--;
-                }
+        const mergeSort = (arr) => {
+            if (arr.length <= 1) {
+                return arr;
             }
-            return i;
-        }
 
-        function quickSort(arr, left, right) {
-            let index;
-            if (arr.length > 1) {
-                index = partition(arr, left, right); //index returned from partition
-                if (left < index - 1) { //more elements on the left side of the pivot
-                    quickSort(arr, left, index - 1);
-                }
-                if (index < right) { //more elements on the right side of the pivot
-                    quickSort(arr, index, right);
+            let midIdx = Math.floor(arr.length / 2);
+            let left = arr.slice(0, midIdx);
+            let right = arr.slice(midIdx);
+
+            let leftSorted = mergeSort(left);
+            let rightSorted = mergeSort(right);
+
+            return merge(leftSorted, rightSorted);
+
+        };
+
+        const merge = (arr1, arr2) => {
+            let merged = [];
+
+            while (arr1.length && arr2.length) {
+                if (arr1[0] < arr2[0]) {
+                    merged.push(arr1.shift());
+                } else {
+                    merged.push(arr2.shift());
                 }
             }
-            return arr;
-        }
+
+            return [...merged, ...arr1, ...arr2];
+        };
     </script>
 
     </body>
